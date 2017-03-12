@@ -1,0 +1,444 @@
+<!doctype html>
+<html>
+  <head>
+    <title>Episodic Tagging</title>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js"></script>
+    <script src="https://code.jquery.com/jquery-1.10.2.js"></script>
+    <script src="/Users/bryanxwu/Desktop/bryanxwu/Documents/Extra_Curricular/Research/Poldrack Lab/Practice/Jpsych/jspsych-5.0.3/jspsych.js"></script>
+    <script src="/Users/bryanxwu/Desktop/bryanxwu/Documents/Extra_Curricular/Research/Poldrack Lab/Practice/Jpsych/jspsych-5.0.3/plugins/jspsych-poldrack-single-stim.js"></script>
+    <script src="/Users/bryanxwu/Desktop/bryanxwu/Documents/Extra_Curricular/Research/Poldrack Lab/Practice/Jpsych/jspsych-5.0.3/plugins/jspsych-poldrack-text.js"></script>
+    <script src="/Users/bryanxwu/Desktop/bryanxwu/Documents/Extra_Curricular/Research/Poldrack Lab/Practice/Jpsych/jspsych-5.0.3/plugins/jspsych-poldrack-instructions.js"></script>
+    <link href="/Users/bryanxwu/Desktop/bryanxwu/Documents/Extra_Curricular/Research/Poldrack Lab/Practice/Jpsych/jspsych-5.0.3/css/jspsych.css" rel="stylesheet" type="text/css"></link>
+    <link href="/Users/bryanxwu/Desktop/bryanxwu/Documents/Extra_Curricular/Research/Poldrack Lab/Practice/Jpsych/jspsych-5.0.3/css/episodic_tagging_test_style.css" rel="stylesheet" type="text/css"></link>
+  </head>
+  <body>
+  </body>
+  <script>
+
+/* ************************************ */
+/* Define functions */
+/* ************************************ */
+
+//Function to pull random numbers from a uniform distribution 
+
+
+function getRandomInt(min, max) {
+  return Math.floor(Math.random() * (max - min)) + min;
+}
+
+function calcDelayAmt(k, delay) {
+  return Math.floor(20*(1+(k*delay)));
+}
+
+
+function fillArray(value, len) {
+  var arr = [];
+  for (var i = 0; i < len; i++) {
+    for (var j = 0; j < value.length; j++) {
+      arr.push(value[j]);
+    }
+  }
+  return arr;
+}
+
+/* ************************************ */
+/* Define experimental variables */
+/* ************************************ */
+
+// hard code discount rate to play with
+
+var discount_rate= 0.85
+
+var choices=[80,81] // 80 refers to p and 81 refers to q
+
+// task specific variables
+
+
+var control_delay_options={  // generate randomized delays from a uniform distribution 
+  lower_bound: fillArray([2,5,10,24,29,56,103],8),
+  upper_bound: fillArray([20,29,64,107, 135, 189,223],8)
+}
+
+
+
+var control_delay=[] ;
+for (var i=0;i<control_delay_options.lower_bound.length;i++){
+  control_delay[i]=getRandomInt(control_delay_options.lower_bound[i], control_delay_options.upper_bound[i]);
+}
+
+
+
+
+var control_delay_stim=jsPsych.randomization.repeat(control_delay,1)
+
+var control_delay_amt=[]; // generate delayed amounts 
+for (var i=0; i<control_delay_stim.length;i++){
+  control_delay_amt[i]=calcDelayAmt(discount_rate,control_delay_stim[i]);
+}
+
+var control_stim={ // form options 
+  delay: control_delay_stim,
+  amt: control_delay_amt
+}
+
+var control_trials = []; // form control trials  
+for (var i=0; i<control_stim.amt.length; i++){
+  control_trials.push({
+    stimulus: "<div class = stim_centerbox> <center> $" + control_stim.amt[i] + "<br>" + "<br>" + "<br>" + control_stim.delay[i] + " days "+" <br> "+" <br> "+" <br>  ######### </center></div>",
+    data: { // I center it in the middle of screen, with CSS
+      larger_amount: control_stim.amt[i],
+      later_delay: control_stim.delay[i],
+      trial_id:  "stim",
+      exp_stage: "test",
+      condition: 'control'
+    }
+  });
+}
+
+
+var exp_delay_options={
+  lower_bound:fillArray([1,3,11,18,34,36,128],8),
+  upper_bound:fillArray([11,34,37,91,115,172,226],8)
+}
+
+var exp_delay=[];
+for (var i=0;i<exp_delay_options.lower_bound.length;i++){
+  exp_delay[i]=getRandomInt(exp_delay_options.lower_bound[i],exp_delay_options.upper_bound[i]);
+}
+
+var exp_delay_stim=jsPsych.randomization.repeat(exp_delay,1)
+
+var exp_delay_amt=[];
+for (var i=0; i<exp_delay_stim.length;i++){
+  exp_delay_amt[i]=calcDelayAmt(discount_rate,exp_delay_stim[i]);
+}
+
+var exp_stim={
+  delay: exp_delay_stim,
+  amt: exp_delay_amt
+}
+
+var exp_trials=[];
+for (var i=0; i<exp_stim.amt.length;i++){
+  exp_trials.push({
+    stimulus: "<div class = stim_centerbox> <center> $" + control_stim.amt[i] + "<br>" + "<br>" + "<br>" + control_stim.delay[i] + " days "+" <br> "+" <br> "+" <br>  (vacation paris) </center></div>",
+    data: { // I center it in the middle of screen, with CSS
+      larger_amount: exp_stim.amt[i],
+      later_delay: exp_stim.delay[i],
+      trial_id:  "stim",
+      exp_stage: "test",
+      condition: 'experimental'
+    }
+  });
+}
+
+
+var stims = [].concat(exp_trials,control_trials)
+
+var test_stims=jsPsych.randomization.repeat(stims,1)
+
+
+var binary_options=jsPsych.randomization.repeat([0,1],1) // form binary values that will be used to randomize feedback 
+
+var practice_feedback_binary=jsPsych.randomization.repeat([0,1],1) // only for practice 
+
+var feedback_binary=[].concat(fillArray([binary_options[0]],56),fillArray([binary_options[1]],56)) 
+
+
+
+
+// this is so that half of the runs will have X on left side half with X on right side 
+
+
+
+var practice_feedback_response=[]; // for practice block 
+// this will randomize whether the response will be on right or left side 
+for (var i=0;i<practice_feedback_binary.length;i++){
+  if (practice_feedback_binary[i]==0) {
+    practice_feedback_response.push({
+      stimulus: '<img id="later" class="left" src="/Users/bryanxwu/Desktop/bryanxwu/Documents/Extra_Curricular/Research/Poldrack Lab/Practice/Jpsych/img/Picture4.png">' + '<img id="sooner" class="right" src="/Users/bryanxwu/Desktop/bryanxwu/Documents/Extra_Curricular/Research/Poldrack Lab/Practice/Jpsych/img/Picture5.png">' + '<div class = text_bottombox><p class = block-text>press <strong>q</strong> for the choice on the left and <strong>p</strong> for the choice on the right.</p></div>' 
+    });
+  }
+  else {
+    practice_feedback_response.push({   
+      stimulus: '<img id="later" class="right" src="/Users/bryanxwu/Desktop/bryanxwu/Documents/Extra_Curricular/Research/Poldrack Lab/Practice/Jpsych/img/Picture4.png">' + '<img id="sooner" class="left" src="/Users/bryanxwu/Desktop/bryanxwu/Documents/Extra_Curricular/Research/Poldrack Lab/Practice/Jpsych/img/Picture5.png">' + '<div class = text_bottombox><p class = block-text>press <strong>q</strong> for the choice on the left and <strong>p</strong> for the choice on the right.</p></div>' 
+    });
+  }
+}
+
+var feedback_response=[]; // for test block 
+for (var i=0;i<feedback_binary.length;i++){
+  if (feedback_binary[i]==0) {
+    feedback_response.push({
+       stimulus: '<img id="later" class="left" src="/Users/bryanxwu/Desktop/bryanxwu/Documents/Extra_Curricular/Research/Poldrack Lab/Practice/Jpsych/img/Picture4.png">' + '<img id="sooner" class="right" src="/Users/bryanxwu/Desktop/bryanxwu/Documents/Extra_Curricular/Research/Poldrack Lab/Practice/Jpsych/img/Picture5.png">'
+    });
+  }
+  else {
+    feedback_response.push({
+         stimulus: '<img id="later" class="right" src="/Users/bryanxwu/Desktop/bryanxwu/Documents/Extra_Curricular/Research/Poldrack Lab/Practice/Jpsych/img/Picture4.png">' + '<img id="sooner" class="left" src="/Users/bryanxwu/Desktop/bryanxwu/Documents/Extra_Curricular/Research/Poldrack Lab/Practice/Jpsych/img/Picture5.png">'
+    });
+  }
+}
+
+
+
+var exp_stage = 'practice'
+
+
+var jitter_timing_options={ // jitter will not be a static block since it varies in how long it appears on the screen  
+  lower_bound:fillArray([3000],112),
+  upper_bound:fillArray([7000],112)
+}
+
+var jitter_time=[]; // for first jitter
+for (var i=0;i<jitter_timing_options.lower_bound.length; i++){
+  jitter_time[i]=getRandomInt(jitter_timing_options.lower_bound[i],jitter_timing_options.upper_bound[i]);
+}
+
+var end_jitter_time=[]; // for end jitter
+for (var i=0;i<jitter_timing_options.lower_bound.length; i++){
+  end_jitter_time[i]=getRandomInt(jitter_timing_options.lower_bound[i],jitter_timing_options.upper_bound[i]);
+}
+
+var jitter_fixation=[];
+for (var i=0;i<jitter_time.length;i++){
+  jitter_fixation.push({
+    stimulus: '<img class="center_image" src ="/Users/bryanxwu/Desktop/bryanxwu/Documents/Extra_Curricular/Research/Poldrack Lab/Practice/Jpsych/img/Picture2.png">'
+  });
+}
+
+
+
+/* ************************************ */
+/* Set up jsPsych blocks */
+/* ************************************ */
+
+/* define static blocks */
+
+
+
+var welcome_block = {
+  
+  type: 'poldrack-text',
+  text:  '<div class = centerbox><p class = center-block-text>Welcome to the Episodic tagging delay discounting experiment.</p><p class = center-block-text>Press <strong>enter</strong> to continue.</p></div>',
+  cont_key: [13],
+};
+
+
+
+var instructions_block = {
+  type: 'poldrack-text',
+  text:
+    '<div class = instructions_text_centerbox><p class = block-text>In this experiment you will be asked to choose between two amounts of money. One of the amounts will be available now and the other will be available in the future. The amount that will be available immediately will be $20 throughout the experiment and will not be displayed on the screen. The amount available in the future will be present on the screen. On each trial, you will see a series of stimuli on the screen. The presentation of the stimuli will always begin with a green dot, followed by a delayed amount with the corresponding delay time. On some trials, the delayed amount will be paired with an event that you have thought of before. Then, a red dot will appear. When the <span style= "color:red"> X</span> and<span style="color:green"> &#10003</span> appear on the screen, your job is to indicate which option you would prefer by pressing <strong>q</strong> for the option on the left <strong>p</strong> for the option on the right. The<span style= "color:red"> X</span> indicates that you reject the delayed amount in the preceding screen and prefer the immediate, $20 amount. The <span style="color:green"> &#10003</span> indicates that you accept the delayed amount. Please press one key, as only your first choice counts. The trial ends with with another red dot.</p><p class = block-text>You should indicate your <strong>true</strong> preference because at the end of the experiment a random trial will be chosen and you will receive a bonus payment proportional to the option you selected at the time point you chose.</p> <p class = block-text>Press <strong>enter</strong> to continue.</p> </div>',
+  cont_key: [13],
+};
+
+var start_practice_block = {
+  type: 'poldrack-text',
+  text: '<div class = centerbox><p class = center-block-text>Here is a sample trial. Your choice for this trial will not be included in your bonus payment.</p><p class = center-block-text>Press <strong>enter</strong> to continue.</p></div>',
+  cont_key: [13],
+};
+
+
+var start_fixation = {  // set each trial to begin with a green dot lasting 500 ms
+  type: 'poldrack-single-stim',
+  stimulus: '<img class="center_image" src ="/Users/bryanxwu/Desktop/bryanxwu/Documents/Extra_Curricular/Research/Poldrack Lab/Practice/Jpsych/img/Picture1.png">',
+  is_html: true,
+  choices: 'none',
+  data: {
+    trial_id: "fixation"
+  },
+  timing_post_trial: 500,
+  timing_stim: 500,
+  timing_response:500,
+  on_finish: function() {
+    jsPsych.data.addDataToLastTrial({'exp_stage': exp_stage})
+  },
+}
+
+
+var start_test_block = {
+  type: 'poldrack-text',
+  text: '<div class = centerbox><p class = center-block-text>You are now ready to begin the survey. Remember to indicate your <strong>true</strong> preferences.</p> <p class = center-block-text>Press <strong>enter</strong> to begin.</p></div>',
+  cont_key: [13],
+};
+
+var end_block = {
+  type: 'poldrack-text',
+  text: '<div class = centerbox><p class = center-block-text>Thanks for completing this task!</p><p class = center-block-text>Press <strong>enter</strong> to finish.</p></div>',
+  cont_key: [13],
+};
+
+    var chosen_amount = 0
+    var chosen_delay = 0
+    var choice = ''
+
+var episodic_tagging_experiment = []
+// episodic_tagging_experiment.push(welcome_block)
+// episodic_tagging_experiment.push(instructions_block)
+// episodic_tagging_experiment.push(start_practice_block)
+// episodic_tagging_experiment.push(start_fixation)
+  var practice_block = {
+  type: 'poldrack-single-stim',
+  stimulus: "<div class = stim_centerbox> <center> $30 "+" <br> "+" <br> "+" <br> 35 days "+" <br> "+" <br> "+" <br> ######### </center></div>",
+  is_html: true,
+  data: {
+    trial_id: "stim",
+    exp_stage: "practice"
+  },
+  timing_stim: 2000, 
+  timing_response: 2000,
+  is_html: true,
+  choices: choices,
+  response_ends_trial: false,
+  };
+  var jitter_block={
+  type: 'poldrack-single-stim',
+  stimulus:jitter_fixation[getRandomInt(0,112)].stimulus, // just let it run a practice trial with a random iteration 
+  timing_stim:jitter_time[getRandomInt(0,112)],
+  timing_response:jitter_time[getRandomInt(0,112)],
+  is_html: true,
+  response_ends_trial:false
+  };
+// /* feedback function */ 
+// 	document.addEventListener("keydown",function(event){
+// 	if (practice_feedback_binary[0]==1 && event.keyCode=="80") {
+// 	 document.getElementById("later").style.border = "5px solid black";
+// 	}
+// 	 // 80 refers to choosing delayed reward and 81 refers to immediate reward 
+// 	if (practice_feedback_binary[0]==1 && event.keyCode=="81") {
+// 	 document.getElementById("sooner").style.border = "5px solid black"; 
+// 	}
+// 	if (practice_feedback_binary[0]==0 && event.keyCode=="80") {
+// 	 document.getElementById("sooner").style.border = "5px solid black";
+// 	}
+// 	if (practice_feedback_binary[0]==0 && event.keyCode=="81") {
+// 	 document.getElementById("later").style.border = "5px solid black";
+// 	} 
+// });
+  var feedback_block={
+  type: 'poldrack-single-stim',
+  stimulus: practice_feedback_response[0].stimulus, // just have first feedback block be the first iteration, which is randomized above
+  timing_stim: 5000,
+  timing_response:5000,
+  choices: choices,
+  is_html:true,
+  response_ends_trial:false
+  };
+  var end_jitter_block={
+  type: 'poldrack-single-stim',
+  stimulus:jitter_fixation[getRandomInt(0,112)].stimulus, // just let it run a practice trial with a random iteration 
+  timing_stim:end_jitter_time[getRandomInt(0,112)],
+  timing_response:end_jitter_time[getRandomInt(0,112)],
+  is_html: true,
+  response_ends_trial:false
+  };
+// episodic_tagging_experiment.push(practice_block)
+// episodic_tagging_experiment.push(jitter_block)
+// episodic_tagging_experiment.push(feedback_block)
+// episodic_tagging_experiment.push(end_jitter_block)
+
+/* define test trials */
+
+episodic_tagging_experiment.push(start_test_block)
+for (var i = 0; i < test_stims.length; i++) { 
+	window.addEventListener("keydown", checkKeyPress, false);
+	if (feedback_binary[i]==0) {
+		function checkKeyPress(key) {
+		if (key.keyCode=="81") {
+		 document.getElementById("later").style.border = "5px solid black";
+		}
+	 // 80 refers to choosing delayed reward and 81 refers to immediate reward 
+		if (key.keyCode=="80") {
+	 	document.getElementById("sooner").style.border = "5px solid black"; 
+		}
+	}
+	}
+	else{
+		function checkKeyPress(key) {
+		if (key.keyCode=="80") {
+		 document.getElementById("later").style.border = "5px solid black";
+		}
+		if (key.keyCode=="81") {
+		 document.getElementById("sooner").style.border = "5px solid black"; 
+		}
+	}
+	}	
+  // episodic_tagging_experiment.push(start_fixation)
+  var test_block = { // since test blocks will have varying values, I have to iterate it over and then pass over static blocks 
+  type: 'poldrack-single-stim',
+  data: {
+    trial_id: "stim",
+    exp_stage: "test"
+  },
+  stimulus:test_stims[i].stimulus,
+  timing_stim: 2000, 
+  timing_response: 2000,
+  data: test_stims[i].data,
+  is_html: true,
+  choices:choices,
+  response_ends_trial: false,
+    on_finish: function(data) {
+    var whichKey = data.key_press
+    var chosen_amount = 0
+    var chosen_delay = 0
+    var choice = ''
+    if (whichKey == 81) {
+      chosen_amount = '$20'
+      chosen_delay = 'immediately'
+      choice = 'smaller_sooner'
+    } else if (whichKey == 80) {
+      chosen_amount = data.larger_amount
+      chosen_delay = data.later_delay
+      choice = 'larger_later'
+    }
+    jsPsych.data.addDataToLastTrial({
+      chosen_amount: chosen_amount,
+      chosen_delay: chosen_delay,
+      choice: choice
+    });
+  }
+  };
+  var jitter_block={
+  type: 'poldrack-single-stim',
+  stimulus:jitter_fixation[i].stimulus,
+  timing_stim:jitter_time[i],
+  timing_response:jitter_time[i],
+  is_html: true,
+  response_ends_trial:false
+  };
+  var feedback_block={
+  type: 'poldrack-single-stim',
+  stimulus: feedback_response[i].stimulus,
+  timing_stim: -1,
+  timing_response:-1,
+  is_html:true,
+  response_ends_trial:false   
+  };
+  var end_jitter_block={
+  type: 'poldrack-single-stim',
+  stimulus:jitter_fixation[i].stimulus, 
+  timing_stim:end_jitter_time[i],
+  timing_response:end_jitter_time[i],
+  is_html: true,
+  response_ends_trial:false
+  };
+// episodic_tagging_experiment.push(test_block)
+// episodic_tagging_experiment.push(jitter_block)
+episodic_tagging_experiment.push(feedback_block)
+// episodic_tagging_experiment.push(end_jitter_block)
+}
+// episodic_tagging_experiment.push(end_block)
+
+
+     // start the experiment 
+  jsPsych.init({
+    timeline: episodic_tagging_experiment,
+    on_finish: function() {
+      jsPsych.data.localSave('experiment_save', 'csv');
+    }
+  });
+
+</script>
+</html>
+

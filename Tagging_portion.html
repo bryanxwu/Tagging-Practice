@@ -1,0 +1,162 @@
+<!doctype html>
+<html>
+  <head>
+    <title>Tagging Portion</title>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js"></script>
+    <script src="https://code.jquery.com/jquery-1.10.2.js"></script>
+    <script src="/Users/bryanxwu/Desktop/bryanxwu/Documents/Extra_Curricular/Research/Poldrack Lab/Practice/Jpsych/jspsych-5.0.3/jspsych.js"></script>
+    <script src="/Users/bryanxwu/Desktop/bryanxwu/Documents/Extra_Curricular/Research/Poldrack Lab/Practice/Jpsych/jspsych-5.0.3/plugins/jspsych-poldrack-single-stim.js"></script>
+    <script src="/Users/bryanxwu/Desktop/bryanxwu/Documents/Extra_Curricular/Research/Poldrack Lab/Practice/Jpsych/jspsych-5.0.3/plugins/jspsych-poldrack-text.js"></script>
+    <script src="/Users/bryanxwu/Desktop/bryanxwu/Documents/Extra_Curricular/Research/Poldrack Lab/Practice/Jpsych/jspsych-5.0.3/plugins/jspsych-survey-likert.js"></script>
+    <script src="/Users/bryanxwu/Desktop/bryanxwu/Documents/Extra_Curricular/Research/Poldrack Lab/Practice/Jpsych/jspsych-5.0.3/plugins/jspsych-survey-text.js"></script>
+    <script src="/Users/bryanxwu/Desktop/bryanxwu/Documents/Extra_Curricular/Research/Poldrack Lab/Practice/Jpsych/jspsych-5.0.3/plugins/jspsych-poldrack-instructions.js"></script>
+    <link href="/Users/bryanxwu/Desktop/bryanxwu/Documents/Extra_Curricular/Research/Poldrack Lab/Practice/Jpsych/jspsych-5.0.3/css/jspsych.css" rel="stylesheet" type="text/css"></link>
+    <link href="/Users/bryanxwu/Desktop/bryanxwu/Documents/Extra_Curricular/Research/Poldrack Lab/Practice/Jpsych/jspsych-5.0.3/css/tagging_portion_test_style.css" rel="stylesheet" type="text/css"></link>
+  </head> 
+  <body>
+  </body>
+  <script>
+
+/* ************************************ */
+/* Define functions */
+/* ************************************ */
+
+// Function to pull random numbers from a uniform distribution 
+
+
+function getRandomInt(min, max) {
+  return Math.floor(Math.random() * (max - min)) + min;
+}
+
+// Function to create a new date from the current date without using time 
+
+function transformDate(delay){
+  var dt = new Date();
+  dt.setDate(dt.getDate()+delay);
+  return dt.toDateString();
+}
+
+// Function to repeat a value multiple times 
+
+function fillArray(value, len) {
+  var arr = [];
+  for (var i = 0; i < len; i++) {
+    for (var j = 0; j < value.length; j++) {
+      arr.push(value[j]);
+    }
+  }
+  return arr;
+}
+
+/* ************************************ */
+/* Define experimental variables */
+/* ************************************ */
+
+// Task specific variables
+
+var delay_options={ // based on experimental bounds
+  lower_bound:[1,3,11,18,34,36,128],
+  upper_bound:[11,34,37,91,115,172,226]
+}
+
+var delay=[];
+for (var i=0;i<delay_options.lower_bound.length;i++){
+  delay[i]=getRandomInt(delay_options.lower_bound[i],delay_options.upper_bound[i]);
+}
+
+var dates=[];
+for (var i=0;i<delay.length;i++){
+  dates[i]=transformDate(delay[i]);
+}
+
+var date_stim=jsPsych.randomization.repeat(dates,1)
+
+
+
+var tagging_trials=[];
+for (var i=0; i<date_stim.length;i++){
+  tagging_trials.push({
+    preamble:'<div class=stim_block-text> Think about the day: '+ '<b>'+date_stim[i]+'</b>' +'  </div>'
+  });
+}
+
+ 
+/* ************************************ */
+/* Set up jsPsych blocks */
+/* ************************************ */
+
+/* define static blocks */
+
+
+
+
+var instructions_block = {
+  type: 'poldrack-text',
+  text:
+    '<div class = instructions_text_centerbox><p class = block-text>In this portion of the experiment, you will be asked to think about specific events that will occur in the future. On the next several screens, you will see dates. Please write about an event that will occur on or around that date in the text box indicated with as much detail as possible. You can pause and check your calendar if necessary. In addition, please write down one word to identify this event in the box indicated. Afterwards, you will be asked to rate the event you described in terms of how positive/negative, intense/calming, and relevant/irrelevant it was. At the end of this portion of the experiment, you will be given each tag and asked to recall the event you described. If you have forgotten an event, you will be reminded of the description you wrote down in its entirety. </p> <p class = block-text>Press <strong>enter</strong> to continue.</p> </div>',
+  cont_key: [13],
+};
+
+var end_block = {
+  type: 'poldrack-text',
+  text: '<div class = centerbox><p class = center-block-text>Thanks for completing this portion of the experiment</p><p class = center-block-text>Press <strong>enter</strong> to continue.</p></div>',
+  cont_key: [13],
+};
+
+// defining groups of questions that will go together.
+
+var scale={
+  valence: ["1 <br>  not at all positive", "2", "3", "4", "5", "6 <br>  very positive"],
+  arousal: ["1 <br> not at all arousing ", "2", "3", "4", "5", "6 <br> very arousing"],
+  relevance: ["1 <br> not at all relevant ", "2", "3", "4", "5", "6 <br>  very relevant "]
+}
+
+
+
+
+var tagging_portion_experiment = []
+tagging_portion_experiment.push(instructions_block)
+for (var i=0; i<date_stim.length;i++){
+  var tagging_block = {
+    type: 'survey-text',
+    data: {
+      exp_stage: "tagging"
+    },
+    preamble: tagging_trials[i].preamble,
+    questions: ['<p class=stim_block-text>Please describe in detail an event happening on or around this date</p>',
+              '<p class=stim_block-text>Please write one word to identify this event with</p>'],
+    rows: [10, 1],
+    columns: [70,70],
+    on_finish: function(data) {
+    var jsonString=jsPsych.data.dataAsJSON(data);
+    var tmp=JSON.parse(jsonString);
+    var tag=JSON.parse(tmp[1].responses).Q1;
+  }
+  };
+  var likert_block = {
+    type: 'survey-likert',
+    questions: ["Please rate from 1 to 6 how <strong> positive </strong> the event you described is.", "Please rate from 1 to 6 how <strong> arousing </strong> the event you described is.", "Please rate from 1 to 6 how <strong> relevant </strong> the event you described is."],
+    labels: [scale.valence, scale.arousal, scale.relevance], // need one scale for every question on a page
+    on_finish: function(data) {
+    var jsonString=jsPsych.data.dataAsJSON(data);
+    var tmp=JSON.parse(jsonString);
+    var tag=JSON.parse(tmp[2].responses).Q1;
+  }
+  };
+tagging_portion_experiment.push(tagging_block)
+tagging_portion_experiment.push(likert_block)
+}
+tagging_portion_experiment.push(end_block)
+
+
+     // start the experiment 
+  jsPsych.init({
+    timeline: tagging_portion_experiment,
+    on_finish: function() {
+      jsPsych.data.localSave('experiment_save', 'csv');
+    }
+  });
+
+</script>
+</html>
+

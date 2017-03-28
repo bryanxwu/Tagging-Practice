@@ -1,0 +1,42 @@
+#container { 
+	width: 500px;
+	font-size: 20px; 
+}
+
+.table { 
+	display: table; 
+	width: 100%; 
+	padding-top: 30px; 
+}
+
+.row { 
+	display: table-row; 
+}
+
+#option { 
+	display: table-cell; 
+	width: 50%; 
+	padding: 20px; 
+	border: 1px solid #ccc; 
+}
+
+.centerbox {
+  width:35vw;
+  height: 30vw;
+  position:absolute;
+  top:50%;
+  left:50%;
+  margin-right:-50%;
+  transform: translate(-50%,-50%);
+}
+
+/* As above but centered instead of justified. Good for instructions with few lines */
+.center-block-text {
+  width:100%;
+  text-align: center;
+  margin: 0 auto;
+  margin-bottom: 1em;
+  font-size: 20px;
+  line-height: 120%;
+}
+			

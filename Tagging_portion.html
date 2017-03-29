@@ -141,6 +141,7 @@ for (var i=0; i<date_stim.length;i++){
     rows: [10, 1],
     columns: [70,70],
     on_finish: function(data) {
+      jsPsych.data.addDataToLastTrial({'date': date_stim[i]});
     var jsonString=jsPsych.data.dataAsJSON(data);
     var tmp=JSON.parse(jsonString);
     var tag=JSON.parse(tmp[1].responses).Q1;
@@ -161,19 +162,8 @@ tagging_portion_experiment.push(likert_block)
 }
 tagging_portion_experiment.push(end_block)
 
-
-// getTags = function(){
-//   ...
-// }
-
-// var tags = getTags()
-
-// nextPortion = function(html_file){
-
-// }
-
 function nextPortion() {
-     document.getElementsByClassName("jspsych-display-element")[0].innerHTML='<object type="text/html" data="../tmp.html" ></object>';
+     document.getElementsByClassName("jspsych-display-element")[0].innerHTML='<object type="text/html" data="Tag_reminder.html" ></object>';
 }
 
      // start the experiment 
@@ -181,8 +171,6 @@ function nextPortion() {
     timeline: tagging_portion_experiment,
     on_finish: function() {
       jsPsych.data.localSave('experiment_save', 'csv');
-      // tags = tags
-      // nextPortion(Tag_reminder.html)
       nextPortion()
     }
   });

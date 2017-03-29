@@ -1,0 +1,135 @@
+<!doctype html>
+<html>
+  <head>
+    <title>Tagging Reminder</title>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js"></script>
+    <script src="https://code.jquery.com/jquery-1.10.2.js"></script>
+    <script src="/Users/zeynepenkavi/Downloads/Tagging-Practice/jspsych-5.0.3/jspsych.js"></script>
+    <script src="/Users/zeynepenkavi/Downloads/Tagging-Practice/jspsych-5.0.3/plugins/jspsych-poldrack-single-stim.js"></script>
+    <script src="/Users/zeynepenkavi/Downloads/Tagging-Practice/jspsych-5.0.3/plugins/jspsych-poldrack-text.js"></script>
+    <script src="/Users/zeynepenkavi/Downloads/Tagging-Practice/jspsych-5.0.3/plugins/jspsych-survey-likert.js"></script>
+    <script src="/Users/zeynepenkavi/Downloads/Tagging-Practice/jspsych-5.0.3/plugins/jspsych-survey-text.js"></script>
+    <script src="/Users/zeynepenkavi/Downloads/Tagging-Practice/jspsych-5.0.3/plugins/jspsych-poldrack-instructions.js"></script>
+    <link href="/Users/zeynepenkavi/Downloads/Tagging-Practice/jspsych-5.0.3/css/jspsych.css" rel="stylesheet" type="text/css"></link>
+    <link href="/Users/zeynepenkavi/Downloads/Tagging-Practice/jspsych-5.0.3/css/tagging_portion_test_style.css" rel="stylesheet" type="text/css"></link>
+
+<style>
+object{
+  width:1800px;
+  height: 1800px;
+  position:absolute;
+  top:57%;
+  left:50%;
+  margin-right:-50%;
+  transform: translate(-50%,-50%);
+}
+
+div{
+  text-align: center;
+  margin:20px;
+}
+
+#date{
+  font-weight: bold;
+  text-decoration: underline;
+}
+
+#tag{
+  font-weight: bold;
+  font-size: 32px
+}
+
+#event{
+  font-style: italic;
+}
+</style>
+
+  </head> 
+  <body>
+  </body>
+  <script>
+
+/* ************************************ */
+/* Define functions */
+/* ************************************ */
+
+function checkStage(object){ return object.trial_type == 'survey-text'}
+
+function getTagHtmls() {
+  var date_stim =date_stim
+
+  var events = jsPsych.data.getData().filter(checkStage).map(function(o){return o.responses}).map(function(s){return JSON.parse(s)}).map(function(o){return o.Q0})
+
+  var tags = jsPsych.data.getData().filter(checkStage).map(function(o){return o.responses}).map(function(s){return JSON.parse(s)}).map(function(o){return o.Q1})
+
+  var tag_htmls = []
+
+  for (var i=0; i<date_stim.length;i++){
+    cur_html = '<div class="center-block-text"><div id="date">On '+date_stim[i]+'</div></div><div class="center-block-text"><div id="tag">'+tags[i]+'</div></div><div class="center-block-text"><div id="event">'+events[i]+'</div></div>'
+    tag_htmls.push(cur_html)
+  }
+
+  return tag_htmls;
+}
+
+/* ************************************ */
+/* Define experimental variables */
+/* ************************************ */
+
+// Task specific variables
+
+var tag_htmls = getTagHtmls()
+ 
+/* ************************************ */
+/* Set up jsPsych blocks */
+/* ************************************ */
+
+/* define static blocks */
+
+var reminder_instructions_block = {
+  type: 'poldrack-text',
+  text:
+    '<div class="center-block-text"><p id="prompt">Please review the tag you have provided for the future event you have described.<br>Continue to next page when you are sure you will not forget which event the tag is referring to.</p></div>',
+  cont_key: [13],
+};
+
+var end_block = {
+  type: 'poldrack-text',
+  text: '<div class = centerbox><p class = center-block-text>Thanks for completing this portion of the experiment</p><p class = center-block-text>Press <strong>enter</strong> to continue.</p></div>',
+  cont_key: [13],
+};
+
+var tag_reminder_experiment = []
+
+tag_reminder_experiment.push(reminder_instructions_block)
+
+for (var i=0; i<date_stim.length;i++){
+
+  var reminder_block = {
+    type: 'button-response',
+    stimulus: tag_htmls[i],
+    choices: ['Next'],
+    prompt: "<p class='center-block-text'>Continue to next page when you're sure you won't forget which event the tag is referring to</p>"
+};
+
+tag_reminder_experiment.push(reminder_block)
+}
+
+tag_reminder_experiment.push(end_block)
+
+// function nextPortion() {
+//      document.getElementsByClassName("jspsych-display-element")[0].innerHTML='<object type="text/html" data="Episodic_tagging.html" ></object>';
+// }
+
+     // start the experiment 
+  jsPsych.init({
+    timeline: tag_reminder_experiment,
+    on_finish: function() {
+      jsPsych.data.localSave('experiment_save', 'csv');
+      //nextPortion()
+    }
+  });
+
+</script>
+</html>
+

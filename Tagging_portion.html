@@ -4,14 +4,27 @@
     <title>Tagging Portion</title>
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js"></script>
     <script src="https://code.jquery.com/jquery-1.10.2.js"></script>
-    <script src="/Users/bryanxwu/Desktop/bryanxwu/Documents/Extra_Curricular/Research/Poldrack Lab/Practice/Jpsych/jspsych-5.0.3/jspsych.js"></script>
-    <script src="/Users/bryanxwu/Desktop/bryanxwu/Documents/Extra_Curricular/Research/Poldrack Lab/Practice/Jpsych/jspsych-5.0.3/plugins/jspsych-poldrack-single-stim.js"></script>
-    <script src="/Users/bryanxwu/Desktop/bryanxwu/Documents/Extra_Curricular/Research/Poldrack Lab/Practice/Jpsych/jspsych-5.0.3/plugins/jspsych-poldrack-text.js"></script>
-    <script src="/Users/bryanxwu/Desktop/bryanxwu/Documents/Extra_Curricular/Research/Poldrack Lab/Practice/Jpsych/jspsych-5.0.3/plugins/jspsych-survey-likert.js"></script>
-    <script src="/Users/bryanxwu/Desktop/bryanxwu/Documents/Extra_Curricular/Research/Poldrack Lab/Practice/Jpsych/jspsych-5.0.3/plugins/jspsych-survey-text.js"></script>
-    <script src="/Users/bryanxwu/Desktop/bryanxwu/Documents/Extra_Curricular/Research/Poldrack Lab/Practice/Jpsych/jspsych-5.0.3/plugins/jspsych-poldrack-instructions.js"></script>
-    <link href="/Users/bryanxwu/Desktop/bryanxwu/Documents/Extra_Curricular/Research/Poldrack Lab/Practice/Jpsych/jspsych-5.0.3/css/jspsych.css" rel="stylesheet" type="text/css"></link>
-    <link href="/Users/bryanxwu/Desktop/bryanxwu/Documents/Extra_Curricular/Research/Poldrack Lab/Practice/Jpsych/jspsych-5.0.3/css/tagging_portion_test_style.css" rel="stylesheet" type="text/css"></link>
+    <script src="/Users/zeynepenkavi/Downloads/Tagging-Practice/jspsych-5.0.3/jspsych.js"></script>
+    <script src="/Users/zeynepenkavi/Downloads/Tagging-Practice/jspsych-5.0.3/plugins/jspsych-poldrack-single-stim.js"></script>
+    <script src="/Users/zeynepenkavi/Downloads/Tagging-Practice/jspsych-5.0.3/plugins/jspsych-poldrack-text.js"></script>
+    <script src="/Users/zeynepenkavi/Downloads/Tagging-Practice/jspsych-5.0.3/plugins/jspsych-survey-likert.js"></script>
+    <script src="/Users/zeynepenkavi/Downloads/Tagging-Practice/jspsych-5.0.3/plugins/jspsych-survey-text.js"></script>
+    <script src="/Users/zeynepenkavi/Downloads/Tagging-Practice/jspsych-5.0.3/plugins/jspsych-poldrack-instructions.js"></script>
+    <link href="/Users/zeynepenkavi/Downloads/Tagging-Practice/jspsych-5.0.3/css/jspsych.css" rel="stylesheet" type="text/css"></link>
+    <link href="/Users/zeynepenkavi/Downloads/Tagging-Practice/jspsych-5.0.3/css/tagging_portion_test_style.css" rel="stylesheet" type="text/css"></link>
+
+<style>
+object{
+  width:1800px;
+  height: 1800px;
+  position:absolute;
+  top:57%;
+  left:50%;
+  margin-right:-50%;
+  transform: translate(-50%,-50%);
+}
+</style>
+
   </head> 
   <body>
   </body>
@@ -149,11 +162,28 @@ tagging_portion_experiment.push(likert_block)
 tagging_portion_experiment.push(end_block)
 
 
+// getTags = function(){
+//   ...
+// }
+
+// var tags = getTags()
+
+// nextPortion = function(html_file){
+
+// }
+
+function nextPortion() {
+     document.getElementsByClassName("jspsych-display-element")[0].innerHTML='<object type="text/html" data="../tmp.html" ></object>';
+}
+
      // start the experiment 
   jsPsych.init({
     timeline: tagging_portion_experiment,
     on_finish: function() {
       jsPsych.data.localSave('experiment_save', 'csv');
+      // tags = tags
+      // nextPortion(Tag_reminder.html)
+      nextPortion()
     }
   });
 

@@ -56,7 +56,7 @@ div{
 function checkStage(object){ return object.trial_type == 'survey-text'}
 
 function getTagHtmls() {
-  var date_stim =date_stim
+  var dates = jsPsych.data.getData().filter(checkStage).map(function(o){return o.date})
 
   var events = jsPsych.data.getData().filter(checkStage).map(function(o){return o.responses}).map(function(s){return JSON.parse(s)}).map(function(o){return o.Q0})
 
@@ -64,8 +64,8 @@ function getTagHtmls() {
 
   var tag_htmls = []
 
-  for (var i=0; i<date_stim.length;i++){
-    cur_html = '<div class="center-block-text"><div id="date">On '+date_stim[i]+'</div></div><div class="center-block-text"><div id="tag">'+tags[i]+'</div></div><div class="center-block-text"><div id="event">'+events[i]+'</div></div>'
+  for (var i=0; i<dates.length;i++){
+    cur_html = '<div class="center-block-text"><div id="date">On '+dates[i]+'</div></div><div class="center-block-text"><div id="tag">'+tags[i]+'</div></div><div class="center-block-text"><div id="event">'+events[i]+'</div></div>'
     tag_htmls.push(cur_html)
   }
 
@@ -103,7 +103,7 @@ var tag_reminder_experiment = []
 
 tag_reminder_experiment.push(reminder_instructions_block)
 
-for (var i=0; i<date_stim.length;i++){
+for (var i=0; i<tag_htmls.length;i++){
 
   var reminder_block = {
     type: 'button-response',

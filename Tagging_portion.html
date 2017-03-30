@@ -133,7 +133,8 @@ for (var i=0; i<date_stim.length;i++){
   var tagging_block = {
     type: 'survey-text',
     data: {
-      exp_stage: "tagging"
+      exp_stage: "tagging",
+      date: date_stim[i]
     },
     preamble: tagging_trials[i].preamble,
     questions: ['<p class=stim_block-text>Please describe in detail an event happening on or around this date</p>',
@@ -141,7 +142,6 @@ for (var i=0; i<date_stim.length;i++){
     rows: [10, 1],
     columns: [70,70],
     on_finish: function(data) {
-      jsPsych.data.addDataToLastTrial({'date': date_stim[i]});
     var jsonString=jsPsych.data.dataAsJSON(data);
     var tmp=JSON.parse(jsonString);
     var tag=JSON.parse(tmp[1].responses).Q1;

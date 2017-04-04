@@ -1,6 +1,7 @@
 <!doctype html>
 <html>
   <head>
+  
     <title>Tagging Reminder</title>
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js"></script>
     <script src="https://code.jquery.com/jquery-1.10.2.js"></script>
@@ -10,13 +11,13 @@
     <script src="/Users/zeynepenkavi/Downloads/Tagging-Practice/jspsych-5.0.3/plugins/jspsych-survey-likert.js"></script>
     <script src="/Users/zeynepenkavi/Downloads/Tagging-Practice/jspsych-5.0.3/plugins/jspsych-survey-text.js"></script>
     <script src="/Users/zeynepenkavi/Downloads/Tagging-Practice/jspsych-5.0.3/plugins/jspsych-poldrack-instructions.js"></script>
+    <script src="/Users/zeynepenkavi/Downloads/Tagging-Practice/jspsych-5.0.3/plugins/jspsych-button-response.js"></script>
     <link href="/Users/zeynepenkavi/Downloads/Tagging-Practice/jspsych-5.0.3/css/jspsych.css" rel="stylesheet" type="text/css"></link>
     <link href="/Users/zeynepenkavi/Downloads/Tagging-Practice/jspsych-5.0.3/css/tagging_portion_test_style.css" rel="stylesheet" type="text/css"></link>
-
+  
 <style>
 object{
-  width:1800px;
-  height: 1800px;
+  width:800px;
   position:absolute;
   top:57%;
   left:50%;
@@ -93,7 +94,7 @@ var reminder_instructions_block = {
   cont_key: [13],
 };
 
-var end_block = {
+var reminder_end_block = {
   type: 'poldrack-text',
   text: '<div class = centerbox><p class = center-block-text>Thanks for completing this portion of the experiment</p><p class = center-block-text>Press <strong>enter</strong> to continue.</p></div>',
   cont_key: [13],
@@ -109,13 +110,13 @@ for (var i=0; i<tag_htmls.length;i++){
     type: 'button-response',
     stimulus: tag_htmls[i],
     choices: ['Next'],
-    prompt: "<p class='center-block-text'>Continue to next page when you're sure you won't forget which event the tag is referring to</p>"
+    prompt: "<p class='center-block-text'>continue to next page when you're sure you won't forget which event the tag is referring to</p>"
 };
 
 tag_reminder_experiment.push(reminder_block)
 }
 
-tag_reminder_experiment.push(end_block)
+tag_reminder_experiment.push(reminder_end_block)
 
 // function nextPortion() {
 //      document.getElementsByClassName("jspsych-display-element")[0].innerHTML='<object type="text/html" data="Episodic_tagging.html" ></object>';

@@ -26,10 +26,13 @@ function getRandomInt(min, max) {
   return Math.floor(Math.random() * (max - min)) + min;
 }
 
+// Function to calculate the delay amount 
+
 function calcDelayAmt(k, delay) {
   return Math.floor(20*(1+(k*delay)));
 }
 
+// Function to repeat a value multiple times
 
 function fillArray(value, len) {
   var arr = [];
@@ -274,10 +277,10 @@ var end_block = {
     var choice = ''
 
 var episodic_tagging_experiment = []
-// episodic_tagging_experiment.push(welcome_block)
-// episodic_tagging_experiment.push(instructions_block)
-// episodic_tagging_experiment.push(start_practice_block)
-// episodic_tagging_experiment.push(start_fixation)
+episodic_tagging_experiment.push(welcome_block)
+episodic_tagging_experiment.push(instructions_block)
+episodic_tagging_experiment.push(start_practice_block)
+episodic_tagging_experiment.push(start_fixation)
   var practice_block = {
   type: 'poldrack-single-stim',
   stimulus: "<div class = stim_centerbox> <center> $30 "+" <br> "+" <br> "+" <br> 35 days "+" <br> "+" <br> "+" <br> ######### </center></div>",
@@ -333,10 +336,10 @@ var episodic_tagging_experiment = []
   is_html: true,
   response_ends_trial:false
   };
-// episodic_tagging_experiment.push(practice_block)
-// episodic_tagging_experiment.push(jitter_block)
-// episodic_tagging_experiment.push(feedback_block)
-// episodic_tagging_experiment.push(end_jitter_block)
+episodic_tagging_experiment.push(practice_block)
+episodic_tagging_experiment.push(jitter_block)
+episodic_tagging_experiment.push(feedback_block)
+episodic_tagging_experiment.push(end_jitter_block)
 
 /* define test trials */
 
@@ -364,7 +367,7 @@ for (var i = 0; i < test_stims.length; i++) {
 		}
 	}
 	}	
-  // episodic_tagging_experiment.push(start_fixation)
+  episodic_tagging_experiment.push(start_fixation)
   var test_block = { // since test blocks will have varying values, I have to iterate it over and then pass over static blocks 
   type: 'poldrack-single-stim',
   data: {
@@ -412,7 +415,7 @@ for (var i = 0; i < test_stims.length; i++) {
   stimulus: feedback_response[i].stimulus,
   timing_stim: -1,
   timing_response:-1,
-  is_html:true,
+  is_html:true,	
   response_ends_trial:false   
   };
   var end_jitter_block={
@@ -423,12 +426,12 @@ for (var i = 0; i < test_stims.length; i++) {
   is_html: true,
   response_ends_trial:false
   };
-// episodic_tagging_experiment.push(test_block)
-// episodic_tagging_experiment.push(jitter_block)
+episodic_tagging_experiment.push(test_block)
+episodic_tagging_experiment.push(jitter_block)
 episodic_tagging_experiment.push(feedback_block)
-// episodic_tagging_experiment.push(end_jitter_block)
+episodic_tagging_experiment.push(end_jitter_block)
 }
-// episodic_tagging_experiment.push(end_block)
+episodic_tagging_experiment.push(end_block)
 
 
      // start the experiment 

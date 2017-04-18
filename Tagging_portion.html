@@ -4,27 +4,14 @@
     <title>Tagging Portion</title>
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js"></script>
     <script src="https://code.jquery.com/jquery-1.10.2.js"></script>
-    <script src="/Users/zeynepenkavi/Downloads/Tagging-Practice/jspsych-5.0.3/jspsych.js"></script>
-    <script src="/Users/zeynepenkavi/Downloads/Tagging-Practice/jspsych-5.0.3/plugins/jspsych-poldrack-single-stim.js"></script>
-    <script src="/Users/zeynepenkavi/Downloads/Tagging-Practice/jspsych-5.0.3/plugins/jspsych-poldrack-text.js"></script>
-    <script src="/Users/zeynepenkavi/Downloads/Tagging-Practice/jspsych-5.0.3/plugins/jspsych-survey-likert.js"></script>
-    <script src="/Users/zeynepenkavi/Downloads/Tagging-Practice/jspsych-5.0.3/plugins/jspsych-survey-text.js"></script>
-    <script src="/Users/zeynepenkavi/Downloads/Tagging-Practice/jspsych-5.0.3/plugins/jspsych-poldrack-instructions.js"></script>
-    <script src="/Users/zeynepenkavi/Downloads/Tagging-Practice/jspsych-5.0.3/plugins/jspsych-button-response.js"></script>
-    <link href="/Users/zeynepenkavi/Downloads/Tagging-Practice/jspsych-5.0.3/css/jspsych.css" rel="stylesheet" type="text/css"></link>
-    <link href="/Users/zeynepenkavi/Downloads/Tagging-Practice/jspsych-5.0.3/css/tagging_portion_test_style.css" rel="stylesheet" type="text/css"></link>
-
-<style>
-object{
-  width:800px;
-  position:absolute;
-  top:57%;
-  left:50%;
-  margin-right:-50%;
-  transform: translate(-50%,-50%);
-}
-</style>
-
+    <script src="/Users/bryanxwu/Desktop/bryanxwu/Documents/Extra_Curricular/Research/Poldrack Lab/Practice/Jpsych/jspsych-5.0.3/jspsych.js"></script>
+    <script src="/Users/bryanxwu/Desktop/bryanxwu/Documents/Extra_Curricular/Research/Poldrack Lab/Practice/Jpsych/jspsych-5.0.3/plugins/jspsych-poldrack-single-stim.js"></script>
+    <script src="/Users/bryanxwu/Desktop/bryanxwu/Documents/Extra_Curricular/Research/Poldrack Lab/Practice/Jpsych/jspsych-5.0.3/plugins/jspsych-poldrack-text.js"></script>
+    <script src="/Users/bryanxwu/Desktop/bryanxwu/Documents/Extra_Curricular/Research/Poldrack Lab/Practice/Jpsych/jspsych-5.0.3/plugins/jspsych-survey-likert.js"></script>
+    <script src="/Users/bryanxwu/Desktop/bryanxwu/Documents/Extra_Curricular/Research/Poldrack Lab/Practice/Jpsych/jspsych-5.0.3/plugins/jspsych-survey-text.js"></script>
+    <script src="/Users/bryanxwu/Desktop/bryanxwu/Documents/Extra_Curricular/Research/Poldrack Lab/Practice/Jpsych/jspsych-5.0.3/plugins/jspsych-poldrack-instructions.js"></script>
+    <link href="/Users/bryanxwu/Desktop/bryanxwu/Documents/Extra_Curricular/Research/Poldrack Lab/Practice/Jpsych/jspsych-5.0.3/css/jspsych.css" rel="stylesheet" type="text/css"></link>
+    <link href="/Users/bryanxwu/Desktop/bryanxwu/Documents/Extra_Curricular/Research/Poldrack Lab/Practice/Jpsych/jspsych-5.0.3/css/tagging_portion_test_style.css" rel="stylesheet" type="text/css"></link>
   </head> 
   <body>
   </body>
@@ -110,11 +97,6 @@ var instructions_block = {
   cont_key: [13],
 };
 
-var end_block = {
-  type: 'poldrack-text',
-  text: '<div class = centerbox><p class = center-block-text>Thanks for completing this portion of the experiment</p><p class = center-block-text>Press <strong>enter</strong> to continue.</p></div>',
-  cont_key: [13],
-};
 
 // defining groups of questions that will go together.
 
@@ -160,7 +142,7 @@ for (var i=0; i<date_stim.length;i++){
 tagging_portion_experiment.push(tagging_block)
 tagging_portion_experiment.push(likert_block)
 }
-tagging_portion_experiment.push(end_block)
+
 
 function nextPortion() {
      document.getElementsByClassName("jspsych-display-element")[0].innerHTML='<object id="nextPortion" type="text/html" data="Tag_reminder.html" ></object>';

@@ -1,50 +1,17 @@
 <!doctype html>
 <html>
   <head>
-  
     <title>Tagging Reminder</title>
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js"></script>
     <script src="https://code.jquery.com/jquery-1.10.2.js"></script>
-    <script src="/Users/zeynepenkavi/Downloads/Tagging-Practice/jspsych-5.0.3/jspsych.js"></script>
-    <script src="/Users/zeynepenkavi/Downloads/Tagging-Practice/jspsych-5.0.3/plugins/jspsych-poldrack-single-stim.js"></script>
-    <script src="/Users/zeynepenkavi/Downloads/Tagging-Practice/jspsych-5.0.3/plugins/jspsych-poldrack-text.js"></script>
-    <script src="/Users/zeynepenkavi/Downloads/Tagging-Practice/jspsych-5.0.3/plugins/jspsych-survey-likert.js"></script>
-    <script src="/Users/zeynepenkavi/Downloads/Tagging-Practice/jspsych-5.0.3/plugins/jspsych-survey-text.js"></script>
-    <script src="/Users/zeynepenkavi/Downloads/Tagging-Practice/jspsych-5.0.3/plugins/jspsych-poldrack-instructions.js"></script>
-    <script src="/Users/zeynepenkavi/Downloads/Tagging-Practice/jspsych-5.0.3/plugins/jspsych-button-response.js"></script>
-    <link href="/Users/zeynepenkavi/Downloads/Tagging-Practice/jspsych-5.0.3/css/jspsych.css" rel="stylesheet" type="text/css"></link>
-    <link href="/Users/zeynepenkavi/Downloads/Tagging-Practice/jspsych-5.0.3/css/tagging_portion_test_style.css" rel="stylesheet" type="text/css"></link>
-  
-<style>
-object{
-  width:800px;
-  position:absolute;
-  top:57%;
-  left:50%;
-  margin-right:-50%;
-  transform: translate(-50%,-50%);
-}
-
-div{
-  text-align: center;
-  margin:20px;
-}
-
-#date{
-  font-weight: bold;
-  text-decoration: underline;
-}
-
-#tag{
-  font-weight: bold;
-  font-size: 32px
-}
-
-#event{
-  font-style: italic;
-}
-</style>
-
+    <script src="/Users/bryanxwu/Desktop/bryanxwu/Documents/Extra_Curricular/Research/Poldrack Lab/Practice/Jpsych/jspsych-5.0.3/jspsych.js"></script>
+    <script src="/Users/bryanxwu/Desktop/bryanxwu/Documents/Extra_Curricular/Research/Poldrack Lab/Practice/Jpsych/jspsych-5.0.3/plugins/jspsych-poldrack-single-stim.js"></script>
+    <script src="/Users/bryanxwu/Desktop/bryanxwu/Documents/Extra_Curricular/Research/Poldrack Lab/Practice/Jpsych/jspsych-5.0.3/plugins/jspsych-poldrack-text.js"></script>
+    <script src="/Users/bryanxwu/Desktop/bryanxwu/Documents/Extra_Curricular/Research/Poldrack Lab/Practice/Jpsych/jspsych-5.0.3/plugins/jspsych-survey-likert.js"></script>
+    <script src="/Users/bryanxwu/Desktop/bryanxwu/Documents/Extra_Curricular/Research/Poldrack Lab/Practice/Jpsych/jspsych-5.0.3/plugins/jspsych-survey-text.js"></script>
+    <script src="/Users/bryanxwu/Desktop/bryanxwu/Documents/Extra_Curricular/Research/Poldrack Lab/Practice/Jpsych/jspsych-5.0.3/plugins/jspsych-poldrack-instructions.js"></script>
+    <link href="/Users/bryanxwu/Desktop/bryanxwu/Documents/Extra_Curricular/Research/Poldrack Lab/Practice/Jpsych/jspsych-5.0.3/css/jspsych.css" rel="stylesheet" type="text/css"></link>
+    <link href="/Users/bryanxwu/Desktop/bryanxwu/Documents/Extra_Curricular/Research/Poldrack Lab/Practice/Jpsych/jspsych-5.0.3/css/tagging_portion_test_style.css" rel="stylesheet" type="text/css"></link>
   </head> 
   <body>
   </body>
@@ -63,15 +30,19 @@ function getTagHtmls() {
 
   var tags = jsPsych.data.getData().filter(checkStage).map(function(o){return o.responses}).map(function(s){return JSON.parse(s)}).map(function(o){return o.Q1})
 
-  var tag_htmls = []
-
+  var tag_htmls = [];
   for (var i=0; i<dates.length;i++){
-    cur_html = '<div class="center-block-text"><div id="date">On '+dates[i]+'</div></div><div class="center-block-text"><div id="tag">'+tags[i]+'</div></div><div class="center-block-text"><div id="event">'+events[i]+'</div></div>'
-    tag_htmls.push(cur_html)
+    tag_htmls.push({
+      stimulus: '<div class=stim_centerbox> <b>Date:</b> '+dates[i]+' <br>'+'<br> <b>Tag:</b> '+tags[i]+'</b> <br>'+'<br> <b>Description:</b> '+events[i]+' Press <strong> enter </strong> when you are ready are sure you will not forget which event the tag on the screen refers to</div>'
+    });
   }
 
   return tag_htmls;
 }
+
+
+
+
 
 /* ************************************ */
 /* Define experimental variables */
@@ -90,7 +61,7 @@ var tag_htmls = getTagHtmls()
 var reminder_instructions_block = {
   type: 'poldrack-text',
   text:
-    '<div class="center-block-text"><p id="prompt">Please review the tag you have provided for the future event you have described.<br>Continue to next page when you are sure you will not forget which event the tag is referring to.</p></div>',
+    '<div class="centerbox"> <p class=center-block-text id="prompt">On the next few screens, please review the dates, tags, and descriptions for each future event you have provided. </p> <p class=center-block-text> Press <strong> enter </strong> to continue to the next page when you are sure you will not forget which event the tag on the screen refers to.</p></div>',
   cont_key: [13],
 };
 
@@ -105,22 +76,19 @@ var tag_reminder_experiment = []
 tag_reminder_experiment.push(reminder_instructions_block)
 
 for (var i=0; i<tag_htmls.length;i++){
-
-  var reminder_block = {
-    type: 'button-response',
-    stimulus: tag_htmls[i],
-    choices: ['Next'],
-    prompt: "<p class='center-block-text'>continue to next page when you're sure you won't forget which event the tag is referring to</p>"
-};
-
+var reminder_block = {
+  type: 'poldrack-single-stim',
+  stimulus: tag_htmls[i].stimulus,
+  is_html:true,
+  timing_stim: -1, 
+  timing_response: -1,
+  is_html: true,
+  choices: [13],
+  response_ends_trial: true,
+  };
 tag_reminder_experiment.push(reminder_block)
 }
-
 tag_reminder_experiment.push(reminder_end_block)
-
-// function nextPortion() {
-//      document.getElementsByClassName("jspsych-display-element")[0].innerHTML='<object type="text/html" data="Episodic_tagging.html" ></object>';
-// }
 
      // start the experiment 
   jsPsych.init({
